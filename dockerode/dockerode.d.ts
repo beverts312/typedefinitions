@@ -203,7 +203,43 @@ declare module "dockerode" {
 	}
 
 	interface ServiceInfo {
+		CreatedAt: string;
+		Endpoint: EndpointInfo;
+		ID: string;
+		Spec: ServiceSpec;
+		UpdatedAt: string;
+	}
 
+	interface EndpointInfo {
+		Ports: PortInfo[];
+		Spec: EndpointSpec;
+		VirtualIPs: VirtualIP[]
+	}
+
+	interface VirtualIP {
+		Addr: string;
+		NetworkID: string;
+	}
+
+	interface EndpointSpec {
+		Mode: string;
+		Ports: PortInfo[];
+	}
+
+	interface PortInfo {
+		Protocal: string;
+		PublishedPort: number;
+		TargetPort: number;
+	}
+
+	interface ServiceSpec {
+		Mode: ModeInfo;
+		EndpointSpec: EndpointSpec;
+		Ports: PortInfo[];
+	}
+
+	interface ModeInfo {
+		Replicas: number;
 	}
 
 	interface TaskInfo {
