@@ -235,11 +235,34 @@ declare module "dockerode" {
 	interface ServiceSpec {
 		Mode: ModeInfo;
 		EndpointSpec: EndpointSpec;
-		Ports: PortInfo[];
+		Name: string;
+		TaskTemplate: TaskTemplate;
+	}
+
+	interface TaskTemplate {
+		ContainerSpec: ContainerSpec;
+		RestartPolicy: RestartPolicy;
+	}
+
+	interface ContainerSpec {
+		Env: string[];
+		Image: string;
+		Mounts: MountInfo;
+	}
+
+	interface RestartPolicy {
+		Condition: string;
+		MaxAttempts: number;
 	}
 
 	interface ModeInfo {
 		Replicas: number;
+	}
+
+	interface MountInfo {
+		Source: string;
+		Target: string;
+		Type: string;
 	}
 
 	interface TaskInfo {
