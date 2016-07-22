@@ -74,7 +74,7 @@ declare module "dockerode" {
 
 	interface Service {
 		inspect(callback: (err: Error, data: any) => void);
-		delete(callback: (err: Error, data: any) => void);
+		remove(callback: (err: Error, data: any) => void);
 		update(opts: any, callback: (err: Error, data: any) => void);
 	}
 
