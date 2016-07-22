@@ -35,7 +35,7 @@ declare module "dockerode" {
 		ping(callback: (err: Error, data: any) => void);
 		getEvents(opts: any, callback: (err: Error, data: any) => void);
 		pull(repoTag: string, opts: any, auth: any, callback: (err: Error, data: any) => void);
-		run(image: string, cmd: string[], streamo: any, createOptions: any, startOptions: any, callback: (err: Error, data: any) => void);
+		run(image: string, cmd: string[], stream: any, createOptions: any, startOptions: any, callback: (err: Error, data: any) => void);
 
 		swarmInit(opts: any, callback: (err: Error, data: any) => void);
 		swarmJoin(opts: any, callback: (err: Error, data: any) => void);
@@ -55,10 +55,10 @@ declare module "dockerode" {
 		
 		createService(opts: any, auth: any, callback: (err: Error, data: any) => void);
 		getService(id: string): Service;
-		listServices(callback: (err: Error, data: any) => void);
+		listServices(callback: (err: Error, data: ServiceInfo[]) => void);
 
 		getNode(id: string): Node;
-		listNodes(callback: (err: Error, data: any) => void);
+		listNodes(callback: (err: Error, data: NodeInfo[]) => void);
 
 		getTask(id: string): Task;
 		listTasks(callback: (err: Error, data: any) => void);
@@ -151,6 +151,58 @@ declare module "dockerode" {
 	}
 
 	interface NodeInfo {
+		CraetedAt: string;
+		Description: NodeDescription;
+		ID: string;
+		ManagerStatus: ManagerStatus;
+		Spec: NodeSpec;
+		Status: NodeStatus;
+		UpdatedAt: string;
+	}
+
+	interface NodeDescription {
+		Hostname: string;		
+		Engine: EngineInfo;
+		Platform: PlatformInfo;
+		Resources: ResourceInfo;
+	}
+
+	interface EngineInfo {
+		EngineVersion: string;
+		Plugins: PluginInfo[];
+	}
+
+	interface PlatformInfo {
+		Architecture: string;
+		OS: string;
+	}
+
+	interface ResourceInfo {
+		MemoryBytes: number;
+		NanoCPUs: number;
+	}
+
+	interface PluginInfo {
+		Name: string;
+		Type: string;
+	}
+
+	interface ManagerStatus {
+		Addr: string;
+		Reachability: string;
+	}
+
+	interface NodeSpec {
+		Availability: string;
+		Membership: string;
+		Role: string;
+	}
+
+	interface NodeStatus {
+		State: string;
+	}
+
+	interface ServiceInfo {
 
 	}
 
