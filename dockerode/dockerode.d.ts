@@ -175,9 +175,23 @@ declare module "dockerode" {
 		 * @param {(err: Error) => void} callback
 		 */
 		swarmInit(opts: InitOpts, callback: (err: Error) => void);
-		swarmJoin(opts: JoinOpts, callback: (err: Error, data: any) => void);
-		swarmLeave(callback: (err: Error, data: any) => void);
-		swarmUpdate(opts: any, callback: (err: Error, data: any) => void);
+		/**
+		 * Join a Swarm Cluster
+		 * @param {JoinOpts} opts
+		 * @param {(err: Error) => void} callback
+		 */
+		swarmJoin(opts: JoinOpts, callback: (err: Error) => void);
+		/**
+		 * Leave a Swarm Cluster
+		 * @param {(err: Error) => void} callback
+		 */
+		swarmLeave(callback: (err: Error) => void);
+		/**
+		 * Update Swarm
+		 * @param {UpdateOpts} options
+		 * @param {(err: Error) => void} callback
+		 */
+		swarmUpdate(opts: UpdateOpts, callback: (err: Error) => void);
 		/**
 		 * Create a container
 		 * @param {CreateOpts} options
@@ -539,7 +553,7 @@ declare module "dockerode" {
 		registrytoken: string;
 	}
 
-	
+
 	interface HostConfig {
 		Binds: string[];
 		Links: string[];
@@ -602,12 +616,12 @@ declare module "dockerode" {
 		Path: string;
 		Weight: number;
 	}
-	
+
 	interface BlkioDeviceBps {
 		Path: string;
-		Rate: number;		
+		Rate: number;
 	}
-	
+
 	interface TopOpts {
 		/**
 		 * ps arguments to use (e.g., aux), defaults to -ef
@@ -917,19 +931,34 @@ declare module "dockerode" {
 
 	interface InitOpts {
 		ListenAddr: string;
-  		ForceNewCluster: boolean;
-  		Spec: SwarmSpec;
-    	Orchestration: Orchestration;
-    	Raft: Raft;
-    	Dispatcher: Dispatcher;
-    	CAConfig: any;
+		ForceNewCluster: boolean;
+		Spec: SwarmSpec;
+		Orchestration: Orchestration;
+		Raft: Raft;
+		Dispatcher: Dispatcher;
+		CAConfig: CAConfig;
 	}
-	
+
+	interface JoinOpts {
+		ListenAddr: string;
+		RemoteAddr: string;
+		Secret: string;
+		CACertHash: string;
+		Manager: boolean;
+	}
+
+	interface UpdateOpts {
+		Policies: Policy[];
+		Orchestration: Orchestration;
+		Raft: Raft;
+		Dispatcher: Dispatcher;
+		CAConfig: CAConfig;
+	}
 	interface SwarmSpec {
-    	AcceptancePolicy: AcceptancePolicy;
+		AcceptancePolicy: AcceptancePolicy;
     }
-	
-	interface AcceptancePolicy{
+
+	interface AcceptancePolicy {
 		Policies: Policy[];
 	}
 
@@ -964,13 +993,5 @@ declare module "dockerode" {
 		Protocal: string;
 		Url: string;
 		Options: any[];
-	}
-
-	interface JoinOpts {
-		ListenAddr: string;
-		RemoteAddr: string;
-		Secret: string;
-		CACertHash: string;
-  		Manager: boolean;
 	}
 }
