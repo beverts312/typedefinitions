@@ -227,8 +227,8 @@ declare module "dockerode" {
 	}
 
 	interface Service {
-		inspect(callback: (err: Error, data: any) => void);
-		remove(callback: (err: Error, data: any) => void);
+		inspect(callback: (err: Error, data: ServiceInfo) => void);
+		remove(callback: (err: Error) => void);
 		update(opts: any, callback: (err: Error, data: any) => void);
 	}
 
@@ -249,24 +249,24 @@ declare module "dockerode" {
 
 	interface Image {
 		name: string;
-		inspect(callback: (err: Error, data: any) => void);
+		inspect(callback: (err: Error, data: ImageInfo) => void);
 		history(callback: (err: Error, data: any) => void);
 		get(callback: (err: Error, data: any) => void);
 		push(opts: any, callback: (err: Error, data: any) => void);
 		tag(opts: any, callback: (err: Error, data: any) => void);
-		remove(opts: any, callback: (err: Error, data: any) => void);
+		remove(opts: any, callback: (err: Error) => void);
 	}
 
 	interface Network {
-		inspect(callback: (err: Error, data: any) => void);
-		remove(opts: any, callback: (err: Error, data: any) => void);
+		inspect(callback: (err: Error, data: NetworkInfo) => void);
+		remove(opts: any, callback: (err: Error) => void);
 		connect(opts: any, callback: (err: Error, data: any) => void);
 		disconnect(opts: any, callback: (err: Error, data: any) => void);
 	}
 
 	interface Volume {
-		inspect(callback: (err: Error, data: any) => void);
-		remove(opts: any, callback: (err: Error, data: any) => void);
+		inspect(callback: (err: Error, data: VolumeInfo) => void);
+		remove(opts: any, callback: (err: Error) => void);
 	}
 
 	interface ContainerInfo {
