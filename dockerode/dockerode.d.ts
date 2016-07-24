@@ -198,8 +198,18 @@ declare module "dockerode" {
 		 * @param {(err: Error, data: any) => void} callback
 		 */
 		createContainer(opts: CreateOpts, callback: (err: Error, data: any) => void);
+		/**
+		 * Get Container Object, allows you to perform container operations
+		 * @param {string} id
+		 * @returns {Container}
+		 */
 		getContainer(id: string): Container;
-		listContainers(opts: any, callback: (err: Error, data: ContainerInfo[]) => void);
+		/**
+		 * List containers
+		 * @param {ListContainerOpts} opts
+		 * @param {(err: Error, data: ContainerInfo[]) => void} callback
+		 */
+		listContainers(opts: ListContainerOpts, callback: (err: Error, data: ContainerInfo[]) => void);
 		/**
 		 * Create an image either by pulling it from the registry or by importing it 
 		 * @param {string} repoTag
@@ -993,5 +1003,14 @@ declare module "dockerode" {
 		Protocal: string;
 		Url: string;
 		Options: any[];
+	}
+
+	interface ListContainerOpts {
+		all: boolean;
+		limit: boolean;
+		since: boolean;
+		before: boolean;
+		size: boolean;
+		filters: string;
 	}
 }
