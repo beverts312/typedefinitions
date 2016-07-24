@@ -1,9 +1,4 @@
 declare module "dockerode" {
-
-	/****************************************************************
-	 *							Functional							*
-	 ****************************************************************/
-
 	/**
 	 * Used to Interact with Container API
 	 * @interface Container
@@ -130,27 +125,82 @@ declare module "dockerode" {
 	}
 
 	interface Docker {
-		constructor(opts: any);
-
-		checkAuth(opts: any, callback: (err: Error, data: any) => void);
+		constructor(opts?: ConnectionOpts);
+		/**
+		 * Validate credentials for a registry and get identity token, if available, for accessing the registry without password.
+		 * @param {*} AuthOpts
+		 * @param {(err: Error, data: AuthRes) => void} callback
+		 */
+		checkAuth(AuthOpts: any, callback: (err: Error, data: AuthRes) => void);
 		getExec(name: string): Exec;
-		info(callback: (err: Error, data: any) => void);
-		version(callback: (err: Error, data: any) => void);
-		ping(callback: (err: Error, data: any) => void);
-		getEvents(opts: any, callback: (err: Error, data: any) => void);
-		pull(repoTag: string, opts: any, auth: any, callback: (err: Error, data: any) => void);
-		run(image: string, cmd: string[], stream: any, createOptions: any, startOptions: any, callback: (err: Error, data: any) => void);
-
-		swarmInit(opts: any, callback: (err: Error, data: any) => void);
-		swarmJoin(opts: any, callback: (err: Error, data: any) => void);
+		/** 
+		 * Display system-wide information
+		 * @param {(err: Error, data: DockerInfo) => void} callback
+		 */
+		info(callback: (err: Error, data: DockerInfo) => void);
+		/**
+		 * Show the docker version information
+		 * @param {(err: Error, data: VersionInfo) => void} callback
+		 */
+		version(callback: (err: Error, data: VersionInfo) => void);
+		/**
+		 * Ping the docker server
+		 * @param {(err: Error) => void} callback
+		 */
+		ping(callback: (err: Error) => void);
+		/**
+		 * Get container events from docker, either in real time via streaming, or via polling (using since).
+		 * Containers: attach, commit, copy, create, destroy, detach, die, exec_create, exec_detach, exec_start, export, kill, oom, pause, rename, resize, restart, start, stop, top, unpause, update
+		 * Images: delete, import, load, pull, push, save, tag, untag
+		 * Volumes: create, mount, unmount, destroy
+		 * Networks: create, connect, disconnect, destroy
+		 * Daemon: reload
+		 * @param {EventOpts} opts
+		 * @param {(err: Error, data: any) => void} callback
+		 */
+		getEvents(opts: EventOpts, callback: (err: Error, data: any) => void);
+		/** 
+		 * Wrapper of the docker run command
+		 * @param {string} image
+		 * @param {string[]} cmd
+		 * @param {*} stream
+		 * @param {CreateOpts} createOptions
+		 * @param {StartOpts} startOptions
+		 * @param {(err: Error, data: any) => void} callback
+		 */
+		run(image: string, cmd: string[], stream: any, createOptions: CreateOpts, startOptions: StartOpts, callback: (err: Error, data: any) => void);
+		/**
+		 * Initialize a Swarm Cluster
+		 * @param {InitOps} options
+		 * @param {(err: Error) => void} callback
+		 */
+		swarmInit(opts: InitOpts, callback: (err: Error) => void);
+		swarmJoin(opts: JoinOpts, callback: (err: Error, data: any) => void);
 		swarmLeave(callback: (err: Error, data: any) => void);
 		swarmUpdate(opts: any, callback: (err: Error, data: any) => void);
-
-		createContainer(opts: any, callback: (err: Error, data: any) => void);
+		/**
+		 * Create a container
+		 * @param {CreateOpts} options
+		 * @param {(err: Error, data: any) => void} callback
+		 */
+		createContainer(opts: CreateOpts, callback: (err: Error, data: any) => void);
 		getContainer(id: string): Container;
 		listContainers(opts: any, callback: (err: Error, data: ContainerInfo[]) => void);
-
-		createImage(opts: any, auth: any, callback: (err: Error, data: any) => void);
+		/**
+		 * Create an image either by pulling it from the registry or by importing it 
+		 * @param {string} repoTag
+		 * @param {PullOpts} opts
+		 * @param {(Token | AuthRes)} auth
+		 * @param {(err: Error, data: any) => void} callback
+		 */
+		pull(repoTag: string, opts: PullOpts, auth: Token | AuthRes, callback: (err: Error, data: any) => void);
+		/**
+		 * Create an image either by pulling it from the registry or by importing it 
+		 * @param {PullOpts} opts
+		 * @param {(Token | AuthRes)} auth
+		 * @param {(err: Error, data: any) => void} callback
+		 */
+		createImage(opts: PullOpts, auth: Token | AuthRes, callback: (err: Error, data: any) => void);
 		getImage(name: string): Image;
 		listImages(opts: any, callback: (err: Error, data: ImageInfo[]) => void);
 		buildImage(file: string, opts: any, callback: (err: Error, data: any) => void);
@@ -219,13 +269,10 @@ declare module "dockerode" {
 		remove(opts: any, callback: (err: Error, data: any) => void);
 	}
 
-	/****************************************************************
-	 *							Models								*
-	 ****************************************************************/
 	interface ContainerInfo {
 		Command: string;
 		Created: number;
-		HostConfig: any;
+		HostConfig: HostConfig;
 		Id: string;
 		Image: string;
 		ImageID: string;
@@ -236,6 +283,74 @@ declare module "dockerode" {
 		Ports: any[]
 		State: string;
 		Status: string;
+	}
+
+	interface DockerInfo {
+		Architecture: string;
+		ClusterStore: string;
+		CgroupDriver: string;
+		Containers: number;
+		ContainersRunning: number;
+		ContainersStopped: number;
+		ContainersPaused: number;
+		CpuCfsPeriod: boolean;
+		CpuCfsQuota: boolean;
+		Debug: boolean;
+		DockerRootDir: string;
+		Driver: string;
+		DriverStatus: any;
+		ExperimentalBuild: boolean;
+		HttpProxy: string;
+		HttpsProxy: string;
+		ID: string;
+		IPv4Forwarding: boolean;
+		Images: number;
+		IndexServerAddress: string;
+		InitPath: string;
+		InitSha1: string;
+		KernelMemory: boolean;
+		KernelVersion: string;
+		Labels: string[];
+		MemTotal: number;
+		MemoryLimit: number;
+		NCPU: number;
+		NEventsListener: number;
+		NFd: number;
+		NGoroutines: number;
+		Name: string;
+		NoProxy: string;
+		OomKillDisable: boolean;
+		OSType: string;
+		OperatingSystem: string;
+		Plugins: Plugins;
+		RegistryConfig: RegistryConfig;
+		SecurityOptions: string[];
+		ServerVersion: string;
+		SwapLimit: boolean;
+		SystemStatus: any;
+		SystemTime: string;
+	}
+
+	interface Plugins {
+		Volume: string[];
+		Network: string[];
+	}
+
+	interface RegistryConfig {
+		IndexConfigs: any;
+		InsecureRegistryCIDRs: string[];
+	}
+
+	interface VersionInfo {
+		Version: string;
+		Os: string;
+		KernelVersion: string;
+		GoVersion: string;
+		GitCommit: string;
+		Arch: string;
+		ApiVersion: string;
+		BuildTime: string;
+		Experimental: boolean;
 	}
 
 	interface ContainerProcesses {
@@ -396,13 +511,103 @@ declare module "dockerode" {
 
 	}
 
+	interface AuthRes {
+		Status: string;
+		IdentityToken: string;
+	}
+
 	interface WaitRes {
 		StatusCode: string;
 	}
 
-	/****************************************************************
-	 *						Option Models							*
-	 ****************************************************************/
+	interface DockerEvent {
+		status: string;
+		id: string;
+		Type: string;
+		Action: string;
+		Actor: Actor;
+		time: number;
+		timeNano: number;
+	}
+
+	interface Actor {
+		ID: string;
+		Attributes: any;
+	}
+
+	interface Token {
+		registrytoken: string;
+	}
+
+	
+	interface HostConfig {
+		Binds: string[];
+		Links: string[];
+		Memory: number;
+		MemorySwap: number;
+		MemoryReservation: number;
+		KernelMemory: number;
+		CpuPercent: number;
+		CpuShares: number;
+		CpuPeriod: number;
+		CpuQuota: number;
+		CpusetCpus: string;
+		CpusetMems: number[];
+		MaximumIOps: number;
+		MaximumIOBps: number;
+		BlkioWeight: number;
+		BlkioWeightDevice: BlkioWeightDevice[];
+		BlkioDeviceReadBps: BlkioDeviceBps[];
+		BlkioDeviceWriteBps: BlkioDeviceBps[];
+		BlkioDeviceReadIOps: BlkioDeviceBps[];
+		BlkioDeviceWiiteIOps: BlkioDeviceBps[];
+		MemorySwappiness: number;
+		OomKillDisable: boolean;
+		OomScoreAdj: number;
+		PidMode: string;
+		PidsLimit: number;
+		PortBindings: any;
+		PublishAllPorts: boolean;
+		Privileged: boolean;
+		ReadonlyRootfs: boolean;
+		Dns: any;
+		DnsOptions: any;
+		DnsSearch: any;
+		ExtraHosts: string[];
+		VolumesFrom: string[];
+		CapAdd: string[];
+		Capdrop: string[];
+		GroupAdd: string[];
+		RestartPolicy: string;
+		UsernsMode: string;
+		NetworkMode: string;
+		Devices: any;
+		Ulimits: Ulimit[];
+		Sysctls: any[];
+		SecurityOpt: string[];
+		StorageOpt: ResizeOpts;
+		LogConfig: any;
+		CgroupParent: string;
+		VolumeDriver: string;
+		ShmSize: number;
+	}
+
+	interface Ulimit {
+		Name: string;
+		Soft: number;
+		Hard: number;
+	}
+
+	interface BlkioWeightDevice {
+		Path: string;
+		Weight: number;
+	}
+	
+	interface BlkioDeviceBps {
+		Path: string;
+		Rate: number;		
+	}
+	
 	interface TopOpts {
 		/**
 		 * ps arguments to use (e.g., aux), defaults to -ef
@@ -622,7 +827,7 @@ declare module "dockerode" {
 		 * show stderr log. Default false.
 		 * @type {boolean}
 		 */
-		stderr: boolean;		
+		stderr: boolean;
 		/**
 		 * UNIX timestamp (integer) to filter logs. Specifying a timestamp will only output log-entries since that timestamp. Default: 0 (unfiltered)
 		 * @type {number}
@@ -632,7 +837,7 @@ declare module "dockerode" {
 		 * print timestamps for every log line. Default false.
 		 * @type {boolean}
 		 */
-		timestampes: boolean;		
+		timestampes: boolean;
 		/**
 		 * Output specified number of lines at the end of logs: all or <number>. Default all.
 		 * @type {(string | number)}
@@ -646,5 +851,126 @@ declare module "dockerode" {
 		 * @type {boolean}
 		 */
 		stream: boolean;
+	}
+
+	interface ConnectionOpts {
+		socketPath: string;
+		host: string;
+		port: number;
+		ca: any;
+		cert: any;
+		key: any;
+	}
+
+	interface AuthOpts {
+		username: string;
+		password: string;
+		serveraddress: string;
+	}
+
+	interface EventOpts {
+		/**
+		 * Timestamp used for polling		
+		 * @type {number}
+		 */
+		since: number;
+		/**
+		 * Timestamp used for polling
+		 * @type {number}
+		 */
+		until: number;
+		/**
+		 * A json encoded value of the filters (a map[string][]string) to process on the event list. 
+		 * @type {string}
+		 */
+		filters: string;
+	}
+
+	interface PullOpts {
+		fromImage: string;
+		fromSrc: string;
+		repo: string;
+	}
+
+	interface CreateOpts {
+		Hostname: string;
+		Domainname: string;
+		User: string;
+		AttachStdin: boolean;
+		AttachStderr: boolean;
+		AttachStdout: boolean;
+		Tty: boolean;
+		OpenStdin: boolean;
+		StdinOnce: boolean;
+		Env: string[];
+		Labels: any;
+		Cmd: string | string[];
+		Entrypoint: string | string[];
+		Image: string;
+		Volumes: string[];
+		WorkingDir: string;
+		NetworkDisabled: boolean;
+		ExposedPorts: any;
+		StopSignal: string | number;
+		HostConfig: HostConfig;
+	}
+
+	interface InitOpts {
+		ListenAddr: string;
+  		ForceNewCluster: boolean;
+  		Spec: SwarmSpec;
+    	Orchestration: Orchestration;
+    	Raft: Raft;
+    	Dispatcher: Dispatcher;
+    	CAConfig: any;
+	}
+	
+	interface SwarmSpec {
+    	AcceptancePolicy: AcceptancePolicy;
+    }
+	
+	interface AcceptancePolicy{
+		Policies: Policy[];
+	}
+
+	interface Policy {
+		Role: string;
+		Autoaccept: boolean;
+		Secret: string;
+	}
+
+	interface Orchestration {
+		TaskHistoryRetentionLimit: number;
+	}
+
+	interface Raft {
+		SnapshotInterval: number;
+		KeepOldSnapshots: number;
+		LogEntriesForSlowFollowers: number;
+		HeartbeatTick: number;
+		ElectionTick: number;
+	}
+
+	interface Dispatcher {
+		HeartbeatPeriod: number;
+	}
+
+	interface CAConfig {
+		NodeCertExpiry: number;
+		ExternalCA: ExternalCA;
+	}
+
+	interface ExternalCA {
+		Protocal: string;
+		Url: string;
+		Options: any[];
+	}
+
+	interface JoinOpts {
+		ListenAddr: string;
+		RemoteAddr: string;
+		Secret: string;
+		CACertHash: string;
+  		Manager: boolean;
 	}
 }
