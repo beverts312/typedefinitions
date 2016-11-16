@@ -11,18 +11,18 @@ declare module 'rolling-spider' {
         flatTrim();
         startPing();
 
-        goForward(opts: MoveOpts);
-        goBackward(opts: MoveOpts);
-        goUp(opts: MoveOpts);
-        goDown(opts: MoveOpts);
+        forward(opts: MoveOpts);
+        backward(opts: MoveOpts);
+        up(opts: MoveOpts);
+        down(opts: MoveOpts);
         turnLeft(opts: MoveOpts);
         turnRight(opts: MoveOpts);
         tiltLeft(opts: MoveOpts);
         tiltRight(opts: MoveOpts);
-        flipForward(opts: MoveOpts);
-        flipBackward(opts: MoveOpts);
-        flipLeft(opts: MoveOpts);
-        flipRight(opts: MoveOpts);
+        frontFlip(opts: MoveOpts);
+        backFlip(opts: MoveOpts);
+        leftFlip(opts: MoveOpts);
+        rightFlip(opts: MoveOpts);
 
         isDronePeripheral(peripheral): boolean;
     }
