@@ -1,5 +1,7 @@
 declare module 'rolling-spider' {
     class Drone {
+        constructor(uuid?:string);
+        
         connect(callback: (err: Error) => void);
         setup(callback: (err: Error) => void);
 
